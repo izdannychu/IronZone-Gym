@@ -86,3 +86,47 @@ npm run dev
 client/   React + Vite + Tailwind frontend
 server/   Express API + SQLite schema/seed
 ```
+
+## Deploy production
+
+Frontend va backend phai duoc deploy rieng. Vercel chi host React client, khong tu chay Express API trong thu muc `server`.
+
+### 1. Deploy backend tren Render
+
+Repository da co file `render.yaml`.
+
+1. Vao Render, chon **New > Blueprint** va ket noi repository.
+2. Render se tao service `ironzone-api` tu thu muc `server`.
+3. Dat bien moi truong `CLIENT_URL` thanh domain frontend, vi du:
+
+```text
+https://iron-zone-gym.vercel.app
+```
+
+4. Sau khi deploy, kiem tra:
+
+```text
+https://<render-service>.onrender.com/api/health
+```
+
+### 2. Ket noi frontend Vercel
+
+Trong Vercel Project Settings > Environment Variables, dat:
+
+```text
+VITE_API_URL=https://<render-service>.onrender.com/api
+```
+
+Khong su dung URL mau `https://your-api.onrender.com/api`.
+
+Sau khi sua environment variable, phai redeploy frontend de Vite dua URL moi vao production bundle.
+
+Vercel project nen co:
+
+```text
+Root Directory: client
+Build Command: npm run build
+Output Directory: dist
+```
+
+Luu y: SQLite tren Render free filesystem co the bi reset khi service duoc deploy lai. Cau hinh hien tai phu hop demo/do an; production lau dai nen dung PostgreSQL hoac persistent disk.

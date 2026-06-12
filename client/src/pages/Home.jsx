@@ -65,13 +65,14 @@ export default function Home() {
   const [trainers, setTrainers] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [activeReview, setActiveReview] = useState(0);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     Promise.all([getPlans(), getTrainers(), getReviews({ target_type: 'gym', target_id: 0 })]).then(([p, t, r]) => {
       setPlans(p.data.data.filter((x) => x.is_featured).slice(0, 3));
       setTrainers(t.data.data.slice(0, 3));
       setReviews(r.data.data.slice(0, 3));
-    });
+    }).catch(() => setApiError(true));
   }, []);
 
   useEffect(() => {
@@ -110,6 +111,14 @@ export default function Home() {
           {stats.map(([value, suffix, label]) => <StatCounter key={label} value={value} suffix={suffix} label={label} />)}
         </div>
       </section>
+
+      {apiError && (
+        <section className="border-y border-amber-400/30 bg-amber-400/10 py-4">
+          <div className="container-page text-sm font-semibold text-amber-700 dark:text-amber-300">
+            Không thể kết nối đến máy chủ dữ liệu. Vui lòng kiểm tra cấu hình VITE_API_URL của bản deploy.
+          </div>
+        </section>
+      )}
 
       <section className="container-page py-16">
         <h2 className="text-3xl font-black">{t.whyChoose}</h2>
