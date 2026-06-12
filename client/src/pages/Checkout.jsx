@@ -22,7 +22,7 @@ export default function Checkout() {
       toast.success(res.data.message);
     } catch (err) {
       setDiscount(0);
-      toast.error(err.response?.data?.message || 'Ma khong hop le');
+      toast.error(err.response?.data?.message || 'Mã không hợp lệ');
     }
   };
 
@@ -33,34 +33,34 @@ export default function Checkout() {
       await refresh();
       navigate('/order-success', { state: res.data.data });
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Thanh toan that bai');
+      toast.error(err.response?.data?.message || 'Thanh toán thất bại');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="container-page py-10">
+    <main className="container-page page-shell pb-10 pt-32">
       <h1 className="text-4xl font-black">Checkout</h1>
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">
         <section className="card p-6">
-          <h2 className="text-xl font-black">Phuong thuc thanh toan</h2>
+          <h2 className="text-xl font-black">Phương thức thanh toán</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {['bank_transfer', 'momo', 'zalopay', 'vnpay', 'cash'].map((m) => <label key={m} className={`cursor-pointer rounded-lg border p-4 font-bold dark:border-zinc-700 ${payment === m ? 'border-primary bg-primary/10' : ''}`}><input className="mr-2" type="radio" checked={payment === m} onChange={() => setPayment(m)} />{m}</label>)}
           </div>
           <div className="mt-6">
-            <label className="text-sm font-bold">Ma giam gia</label>
-            <div className="mt-2 flex gap-2"><input className="input" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="NEWBIE10" /><Button variant="outline" onClick={applyCode}>Ap dung</Button></div>
+            <label className="text-sm font-bold">Mã giảm giá</label>
+            <div className="mt-2 flex gap-2"><input className="input" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="NEWBIE10" /><Button variant="outline" onClick={applyCode}>Áp dụng</Button></div>
           </div>
         </section>
         <aside className="card h-fit p-6">
-          <h2 className="text-xl font-black">Tom tat</h2>
+          <h2 className="text-xl font-black">Tóm tắt</h2>
           <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between"><span>Tam tinh</span><strong>{formatMoney(cart.subtotal)}</strong></div>
-            <div className="flex justify-between"><span>Giam gia</span><strong>-{formatMoney(discount)}</strong></div>
-            <div className="border-t border-zinc-200 pt-3 text-lg dark:border-zinc-800"><div className="flex justify-between"><span>Tong</span><strong>{formatMoney(total)}</strong></div></div>
+            <div className="flex justify-between"><span>Tạm tính</span><strong>{formatMoney(cart.subtotal)}</strong></div>
+            <div className="flex justify-between"><span>Giảm giá</span><strong>-{formatMoney(discount)}</strong></div>
+            <div className="border-t border-zinc-200 pt-3 text-lg dark:border-zinc-800"><div className="flex justify-between"><span>Tổng</span><strong>{formatMoney(total)}</strong></div></div>
           </div>
-          <Button className="mt-6 w-full" loading={loading} onClick={submit} disabled={!cart.items.length}>Tao don hang</Button>
+          <Button className="mt-6 w-full" loading={loading} onClick={submit} disabled={!cart.items.length}>Tạo đơn hàng</Button>
         </aside>
       </div>
     </main>

@@ -12,8 +12,8 @@ export default function TrainerDetail() {
   useEffect(() => { getTrainer(id).then((res) => setTrainer(res.data.data)); }, [id]);
   if (!trainer) return <Spinner />;
   return (
-    <main className="container-page py-10">
-      <Link to="/trainers" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-primary"><ArrowLeft size={16} />Quay lai</Link>
+    <main className="container-page page-shell pb-10 pt-32">
+      <Link to="/trainers" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-primary"><ArrowLeft size={16} />Quay lại</Link>
       <section className="grid gap-8 lg:grid-cols-[360px_1fr]">
         <img src={trainer.avatar_url} className="h-[460px] w-full rounded-xl object-cover" alt={trainer.full_name} />
         <div>
@@ -21,14 +21,14 @@ export default function TrainerDetail() {
           <p className="mt-2 text-primary">{trainer.specialty}</p>
           <p className="mt-6 text-zinc-600 dark:text-zinc-300">{trainer.bio}</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="card p-4"><Award className="text-primary" /><p className="mt-2 text-sm text-zinc-500">Chung chi</p><p className="font-bold">{trainer.certifications}</p></div>
-            <div className="card p-4"><Calendar className="text-primary" /><p className="mt-2 text-sm text-zinc-500">Lich lam viec</p><p className="font-bold">Thu 2-7, 7:00-20:00</p></div>
+            <div className="card p-4"><Award className="text-primary" /><p className="mt-2 text-sm text-zinc-500">Chứng chỉ</p><p className="font-bold">{trainer.certifications}</p></div>
+            <div className="card p-4"><Calendar className="text-primary" /><p className="mt-2 text-sm text-zinc-500">Lịch làm việc</p><p className="font-bold">Thứ 2-7, 7:00-20:00</p></div>
           </div>
-          <p className="mt-6 text-2xl font-black">{formatMoney(trainer.hourly_rate)}/gio</p>
+          <p className="mt-6 text-2xl font-black">{formatMoney(trainer.hourly_rate)}/giờ</p>
         </div>
       </section>
       <section className="mt-12">
-        <h2 className="text-2xl font-black">Review ve HLV</h2>
+        <h2 className="text-2xl font-black">Review về HLV</h2>
         <div className="mt-5 grid gap-5 md:grid-cols-3">{trainer.reviews?.map((review) => <ReviewCard key={review.id} review={review} />)}</div>
       </section>
     </main>

@@ -12,14 +12,14 @@ export const MembershipCard = ({ membership }) => {
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-xl font-black">{membership.plan_name}</h3>
-          <p className="mt-1 flex items-center gap-2 text-sm text-zinc-500"><CalendarDays size={16} /> Het han {membership.end_date}</p>
+          <p className="mt-1 flex items-center gap-2 text-sm text-zinc-500"><CalendarDays size={16} /> Hết hạn {membership.end_date}</p>
         </div>
         <Badge tone={membership.status}>{membership.status}</Badge>
       </div>
       <div className="mt-5 h-3 rounded-full bg-zinc-100 dark:bg-zinc-800">
         <div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
       </div>
-      <p className="mt-2 text-sm font-semibold">{daysLeft} ngay con lai</p>
+      <p className="mt-2 text-sm font-semibold">{daysLeft} ngày còn lại</p>
     </article>
   );
 };

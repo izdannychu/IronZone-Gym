@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { getPlans } from '../api/plans';
 import { PlanCard } from '../components/PlanCard';
 import { Spinner } from '../components/ui/Spinner';
+import { useLanguage } from '../hooks/useLanguage';
 
 export default function Plans() {
+  const { t } = useLanguage();
   const [plans, setPlans] = useState([]);
   const [duration, setDuration] = useState('all');
   const [sort, setSort] = useState('asc');
@@ -22,19 +24,19 @@ export default function Plans() {
   }).sort((a, b) => sort === 'asc' ? a.price - b.price : b.price - a.price), [plans, duration, sort]);
 
   return (
-    <main className="container-page py-10">
+    <main className="container-page page-shell py-28">
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-        <div><h1 className="text-4xl font-black">Goi tap</h1><p className="mt-2 text-zinc-500">Chon goi phu hop muc tieu va lich tap cua ban.</p></div>
+        <div><h1 className="text-4xl font-black">{t.plansTitle}</h1><p className="mt-2 text-zinc-500">{t.plansSubtitle}</p></div>
         <div className="flex flex-wrap gap-2">
-          {['all', '30', '90', '180'].map((v) => <button key={v} onClick={() => setDuration(v)} className={`rounded-lg px-3 py-2 text-sm font-bold ${duration === v ? 'bg-primary text-black' : 'bg-white dark:bg-zinc-900'}`}>{v === 'all' ? 'Tat ca' : v === '30' ? '1 thang' : v === '90' ? '3 thang' : '6+ thang'}</button>)}
-          <label className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm dark:bg-zinc-900"><SlidersHorizontal size={16} /><select className="bg-transparent outline-none" value={sort} onChange={(e) => setSort(e.target.value)}><option value="asc">Gia tang dan</option><option value="desc">Gia giam dan</option></select></label>
+          {['all', '30', '90', '180'].map((v) => <button key={v} onClick={() => setDuration(v)} className={`rounded-lg px-3 py-2 text-sm font-bold ${duration === v ? 'bg-primary text-black' : 'bg-white dark:bg-zinc-900'}`}>{v === 'all' ? t.all : v === '30' ? t.oneMonth : v === '90' ? t.threeMonths : t.sixPlusMonths}</button>)}
+          <label className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm dark:bg-zinc-900"><SlidersHorizontal size={16} /><select className="bg-transparent outline-none" value={sort} onChange={(e) => setSort(e.target.value)}><option value="asc">{t.priceAsc}</option><option value="desc">{t.priceDesc}</option></select></label>
         </div>
       </div>
       {loading ? <Spinner /> : <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{filtered.map((plan) => <PlanCard key={plan.id} plan={plan} />)}</div>}
       <section className="mt-12 overflow-x-auto">
         <table className="w-full min-w-[720px] overflow-hidden rounded-xl border border-zinc-200 text-sm dark:border-zinc-800">
-          <thead className="bg-zinc-100 dark:bg-zinc-900"><tr>{['Goi', 'Thoi han', 'Gia', 'PT mien phi', 'Xong hoi'].map((h) => <th key={h} className="p-4 text-left">{h}</th>)}</tr></thead>
-          <tbody>{plans.map((p) => <tr key={p.id} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-4 font-bold">{p.name}</td><td className="p-4">{p.duration_days} ngay</td><td className="p-4">{p.price.toLocaleString('vi-VN')}d</td><td className="p-4">{p.features.join(' ').includes('PT') ? 'Co' : 'Khong'}</td><td className="p-4">{p.features.join(' ').includes('xong') ? 'Co' : 'Khong'}</td></tr>)}</tbody>
+          <thead className="bg-zinc-100 dark:bg-zinc-900"><tr>{[t.plan, t.duration, t.price, t.freePt, t.sauna].map((h) => <th key={h} className="p-4 text-left">{h}</th>)}</tr></thead>
+          <tbody>{plans.map((p) => <tr key={p.id} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-4 font-bold">{p.name}</td><td className="p-4">{p.duration_days} {t.days}</td><td className="p-4">{p.price.toLocaleString('vi-VN')}d</td><td className="p-4">{p.features.join(' ').includes('PT') ? t.yes : t.no}</td><td className="p-4">{p.features.join(' ').includes('xong') ? t.yes : t.no}</td></tr>)}</tbody>
         </table>
       </section>
     </main>

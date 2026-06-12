@@ -19,6 +19,6 @@ router.post('/', auth, [
 ], validate, (req, res) => {
   const info = db.prepare('INSERT INTO reviews (user_id,target_type,target_id,rating,comment) VALUES (?,?,?,?,?)')
     .run(req.user.id, req.body.target_type, req.body.target_id || 0, req.body.rating, req.body.comment);
-  success(res, { id: info.lastInsertRowid }, 'Da gui review', 201);
+  success(res, { id: info.lastInsertRowid }, 'Đã gửi review', 201);
 });
 export default router;

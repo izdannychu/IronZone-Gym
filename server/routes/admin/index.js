@@ -4,6 +4,7 @@ import { auth } from '../../middleware/auth.js';
 import { adminOnly } from '../../middleware/adminOnly.js';
 import { success } from '../../utils/response.js';
 import members from './members.js';
+import plans from './plans.js';
 import trainers from './trainers.js';
 import equipment from './equipment.js';
 import maintenance from './maintenance.js';
@@ -27,6 +28,7 @@ router.get('/stats', (req, res) => {
 });
 
 router.use('/members', members);
+router.use('/plans', plans);
 router.use('/trainers', trainers);
 router.use('/equipment', equipment);
 router.use('/maintenance', maintenance);

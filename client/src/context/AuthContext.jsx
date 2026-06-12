@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       toast.success(res.data.message);
       return res.data.data.user;
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Dang nhap that bai');
+      toast.error(err.response?.data?.message || 'Đăng nhập thất bại');
       throw err;
     } finally {
       setLoading(false);
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       toast.success(res.data.message);
       return res.data.data.user;
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Dang ky that bai');
+      toast.error(err.response?.data?.message || 'Đăng ký thất bại');
       throw err;
     } finally {
       setLoading(false);

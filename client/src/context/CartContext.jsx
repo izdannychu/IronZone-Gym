@@ -22,12 +22,12 @@ export const CartProvider = ({ children }) => {
 
   const add = async (planId, quantity = 1) => {
     if (!user) {
-      toast.error('Vui long dang nhap de them vao gio');
+      toast.error('Vui lòng đăng nhập để thêm vào giỏ');
       return false;
     }
     const res = await addCartItem({ plan_id: planId, quantity });
     setCart(res.data.data);
-    toast.success('Da them vao gio hang');
+    toast.success('Đã thêm vào giỏ hàng');
     return true;
   };
 
@@ -39,7 +39,7 @@ export const CartProvider = ({ children }) => {
   const remove = async (id) => {
     const res = await deleteCartItem(id);
     setCart(res.data.data);
-    toast.success('Da xoa khoi gio');
+    toast.success('Đã xóa khỏi giỏ');
   };
 
   const value = useMemo(() => ({ cart, refresh, add, update, remove, count: cart.items.reduce((s, i) => s + i.quantity, 0) }), [cart]);

@@ -16,8 +16,8 @@ export const TrainerCard = ({ trainer }) => (
       </div>
       <p className="mt-3 line-clamp-2 text-sm text-zinc-500">{trainer.bio}</p>
       <div className="mt-4 flex items-center justify-between">
-        <span className="text-sm font-bold">{formatMoney(trainer.hourly_rate)}/h</span>
-        <Button as={Link} to={`/trainers/${trainer.id}`} className="px-3" variant="outline">Xem chi tiet</Button>
+        <span className="text-sm font-bold">{formatMoney(trainer.hourly_rate)}/giờ</span>
+        <Button as={Link} to={`/trainers/${trainer.id}`} className="px-3" variant="outline">Xem chi tiết</Button>
       </div>
     </div>
   </article>

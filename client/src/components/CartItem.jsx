@@ -8,7 +8,7 @@ export const CartItem = ({ item }) => {
     <div className="card flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h3 className="font-black">{item.name}</h3>
-        <p className="text-sm text-zinc-500">{item.duration_days} ngay · {formatMoney(item.price)}</p>
+        <p className="text-sm text-zinc-500">{item.duration_days} ngày · {formatMoney(item.price)}</p>
       </div>
       <div className="flex items-center gap-3">
         <button className="rounded-lg border p-2 dark:border-zinc-700" onClick={() => update(item.id, Math.max(1, item.quantity - 1))}><Minus size={16} /></button>

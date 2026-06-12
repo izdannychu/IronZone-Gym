@@ -22,28 +22,28 @@ export default function Dashboard() {
   const active = memberships.filter((m) => m.status === 'active');
   const unread = notifications.filter((n) => !n.is_read).length;
   return (
-    <main className="container-page py-10">
-      <h1 className="text-4xl font-black">Dashboard hoi vien</h1>
+    <main className="container-page page-shell pb-10 pt-32">
+      <h1 className="text-4xl font-black">Dashboard hội viên</h1>
       <div className="mt-8 grid gap-5 md:grid-cols-3">
         <StatCard icon={Dumbbell} label="Membership active" value={active.length} />
-        <StatCard icon={CreditCard} label="Don hang" value={orders.length} />
-        <StatCard icon={Bell} label="Thong bao moi" value={unread} />
+        <StatCard icon={CreditCard} label="Đơn hàng" value={orders.length} />
+        <StatCard icon={Bell} label="Thông báo mới" value={unread} />
       </div>
       <section className="mt-10">
         <h2 className="text-2xl font-black">Membership</h2>
-        <div className="mt-5 grid gap-5 md:grid-cols-2">{memberships.length ? memberships.map((m) => <MembershipCard key={m.id} membership={m} />) : <EmptyState title="Chua co membership" subtitle="Hay mua mot goi tap de kich hoat." />}</div>
+        <div className="mt-5 grid gap-5 md:grid-cols-2">{memberships.length ? memberships.map((m) => <MembershipCard key={m.id} membership={m} />) : <EmptyState title="Chưa có membership" subtitle="Hãy mua một gói tập để kích hoạt." />}</div>
       </section>
       <section className="mt-10">
-        <h2 className="text-2xl font-black">Don hang</h2>
+        <h2 className="text-2xl font-black">Đơn hàng</h2>
         <div className="mt-5 overflow-x-auto card">
           <table className="w-full min-w-[640px] text-sm">
-            <thead className="bg-zinc-100 dark:bg-zinc-800"><tr><th className="p-4 text-left">Ma</th><th className="p-4 text-left">Ngay</th><th className="p-4 text-left">Tong</th><th className="p-4 text-left">Trang thai</th></tr></thead>
+            <thead className="bg-zinc-100 dark:bg-zinc-800"><tr><th className="p-4 text-left">Mã</th><th className="p-4 text-left">Ngày</th><th className="p-4 text-left">Tổng</th><th className="p-4 text-left">Trạng thái</th></tr></thead>
             <tbody>{orders.map((o) => <tr key={o.id} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-4 font-bold">#{o.id}</td><td className="p-4">{new Date(o.ordered_at).toLocaleDateString('vi-VN')}</td><td className="p-4">{formatMoney(o.total_amount)}</td><td className="p-4"><Badge tone={o.status}>{o.status}</Badge></td></tr>)}</tbody>
           </table>
         </div>
       </section>
       <section className="mt-10">
-        <h2 className="text-2xl font-black">Thong bao</h2>
+        <h2 className="text-2xl font-black">Thông báo</h2>
         <div className="mt-5 grid gap-3">{notifications.map((n) => <div key={n.id} className="card flex items-start gap-3 p-4"><PackageCheck className="text-primary" /><div><h3 className="font-bold">{n.title}</h3><p className="text-sm text-zinc-500">{n.message}</p></div></div>)}</div>
       </section>
     </main>

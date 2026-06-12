@@ -23,9 +23,9 @@ router.get('/', (req, res) => {
 });
 router.put('/:id', (req, res) => {
   const current = db.prepare('SELECT * FROM orders WHERE id=?').get(req.params.id);
-  if (!current) return error(res, 'Khong tim thay don hang', 404);
+  if (!current) return error(res, 'Không tìm thấy đơn hàng', 404);
   const next = { ...current, ...req.body };
   db.prepare('UPDATE orders SET payment_status=?, status=?, note=? WHERE id=?').run(next.payment_status, next.status, next.note, req.params.id);
-  success(res, db.prepare('SELECT * FROM orders WHERE id=?').get(req.params.id), 'Da cap nhat don hang');
+  success(res, db.prepare('SELECT * FROM orders WHERE id=?').get(req.params.id), 'Đã cập nhật đơn hàng');
 });
 export default router;

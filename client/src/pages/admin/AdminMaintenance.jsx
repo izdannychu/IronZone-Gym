@@ -1,15 +1,34 @@
-import { useEffect, useState } from 'react';
-import { adminMaintenance } from '../../api/admin';
+import { adminMaintenance, createAdminMaintenance, deleteAdminMaintenance, updateAdminMaintenance } from '../../api/admin';
+import { AdminResource } from '../../components/admin/AdminResource';
 import { formatMoney } from '../../components/PlanCard';
 import { Badge } from '../../components/ui/Badge';
 
+const fields = [
+  { name: 'equipment_id', label: 'ID thiết bị', type: 'number' },
+  { name: 'employee_id', label: 'ID nhân viên', type: 'number' },
+  { name: 'maintenance_date', label: 'Ngày bảo trì', type: 'date' },
+  { name: 'type', label: 'Loại', type: 'select', defaultValue: 'routine', options: ['routine', 'repair', 'replacement', 'inspection'].map((value) => ({ value, label: value })) },
+  { name: 'description', label: 'Mô tả', type: 'textarea' },
+  { name: 'cost', label: 'Chi phí', type: 'number' },
+  { name: 'status', label: 'Trạng thái', type: 'select', defaultValue: 'completed', options: ['scheduled', 'in_progress', 'completed'].map((value) => ({ value, label: value })) }
+];
+
 export default function AdminMaintenance() {
-  const [rows, setRows] = useState([]);
-  useEffect(() => { adminMaintenance().then((res) => setRows(res.data.data)); }, []);
   return (
-    <section>
-      <h1 className="text-3xl font-black">Bao tri</h1>
-      <div className="mt-6 grid gap-4">{rows.map((m) => <article key={m.id} className="card p-4"><div className="flex flex-wrap items-center justify-between gap-3"><h3 className="font-black">{m.equipment_name}</h3><Badge tone={m.status === 'completed' ? 'active' : 'pending'}>{m.status}</Badge></div><p className="mt-2 text-sm text-zinc-500">{m.maintenance_date} · {m.type} · {formatMoney(m.cost)}</p><p className="mt-2 text-sm">{m.description}</p></article>)}</div>
-    </section>
+    <AdminResource
+      title="Quản lý bảo trì"
+      load={adminMaintenance}
+      createItem={createAdminMaintenance}
+      updateItem={updateAdminMaintenance}
+      deleteItem={deleteAdminMaintenance}
+      fields={fields}
+      columns={[
+        { key: 'equipment_name', label: 'Thiết bị', render: (row) => <strong>{row.equipment_name || `#${row.equipment_id}`}</strong> },
+        { key: 'maintenance_date', label: 'Ngày' },
+        { key: 'type', label: 'Loại' },
+        { key: 'cost', label: 'Chi phí', render: (row) => formatMoney(row.cost) },
+        { key: 'status', label: 'Trạng thái', render: (row) => <Badge tone={row.status === 'completed' ? 'active' : 'pending'}>{row.status}</Badge> }
+      ]}
+    />
   );
 }

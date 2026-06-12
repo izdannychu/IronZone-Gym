@@ -23,3 +23,26 @@ body {
 .input {
   @apply w-full rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm outline-none transition focus:border-primary dark:border-zinc-700 dark:bg-zinc-800;
 }
+
+.input-icon-left {
+  @apply pl-11;
+}
+
+.input-icon-right {
+  @apply pr-11;
+}
+
+.page-shell {
+  animation: page-enter 280ms ease both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

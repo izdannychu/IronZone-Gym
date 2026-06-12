@@ -1,14 +1,35 @@
-import { useEffect, useState } from 'react';
-import { adminPromotions } from '../../api/admin';
+import { adminPromotions, createAdminPromotion, deleteAdminPromotion, updateAdminPromotion } from '../../api/admin';
+import { AdminResource } from '../../components/admin/AdminResource';
 import { Badge } from '../../components/ui/Badge';
 
+const fields = [
+  { name: 'code', label: 'Mã' },
+  { name: 'description', label: 'Mô tả', type: 'textarea' },
+  { name: 'discount_type', label: 'Loại giảm', type: 'select', defaultValue: 'percent', options: [{ value: 'percent', label: 'percent' }, { value: 'fixed', label: 'fixed' }] },
+  { name: 'discount_value', label: 'Giá trị', type: 'number' },
+  { name: 'min_order_amount', label: 'Đơn tối thiểu', type: 'number' },
+  { name: 'start_date', label: 'Ngày bắt đầu', type: 'date' },
+  { name: 'end_date', label: 'Ngày kết thúc', type: 'date' },
+  { name: 'usage_limit', label: 'Giới hạn', type: 'number' },
+  { name: 'is_active', label: 'Trạng thái', type: 'select', defaultValue: 1, options: [{ value: 1, label: 'active' }, { value: 0, label: 'inactive' }] }
+];
+
 export default function AdminPromotions() {
-  const [rows, setRows] = useState([]);
-  useEffect(() => { adminPromotions().then((res) => setRows(res.data.data)); }, []);
   return (
-    <section>
-      <h1 className="text-3xl font-black">Ma khuyen mai</h1>
-      <div className="mt-6 grid gap-4 md:grid-cols-2">{rows.map((p) => <article key={p.id} className="card p-5"><div className="flex justify-between gap-4"><h3 className="text-xl font-black text-primary">{p.code}</h3><Badge tone={p.is_active ? 'active' : 'cancelled'}>{p.is_active ? 'active' : 'off'}</Badge></div><p className="mt-2 text-sm text-zinc-500">{p.description}</p><p className="mt-4 font-bold">{p.discount_type === 'percent' ? `${p.discount_value}%` : `${Number(p.discount_value).toLocaleString('vi-VN')}d`} · used {p.used_count}/{p.usage_limit}</p><p className="mt-1 text-xs text-zinc-500">{p.start_date} - {p.end_date}</p></article>)}</div>
-    </section>
+    <AdminResource
+      title="Quản lý mã khuyến mãi"
+      load={adminPromotions}
+      createItem={createAdminPromotion}
+      updateItem={updateAdminPromotion}
+      deleteItem={deleteAdminPromotion}
+      fields={fields}
+      columns={[
+        { key: 'code', label: 'Mã', render: (row) => <strong className="text-primary">{row.code}</strong> },
+        { key: 'discount_value', label: 'Giảm', render: (row) => row.discount_type === 'percent' ? `${row.discount_value}%` : `${Number(row.discount_value).toLocaleString('vi-VN')}đ` },
+        { key: 'used_count', label: 'Đã dùng', render: (row) => `${row.used_count}/${row.usage_limit}` },
+        { key: 'end_date', label: 'Hết hạn' },
+        { key: 'is_active', label: 'Trạng thái', render: (row) => <Badge tone={row.is_active ? 'active' : 'cancelled'}>{row.is_active ? 'active' : 'off'}</Badge> }
+      ]}
+    />
   );
 }

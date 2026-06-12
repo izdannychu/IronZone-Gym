@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 });
 router.get('/:id', (req, res) => {
   const plan = parsePlan(db.prepare('SELECT * FROM plans WHERE id = ? AND is_active = 1').get(req.params.id));
-  if (!plan) return error(res, 'Khong tim thay goi tap', 404);
+  if (!plan) return error(res, 'Không tìm thấy gói tập', 404);
   success(res, plan);
 });
 export default router;

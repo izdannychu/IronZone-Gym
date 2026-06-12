@@ -23,19 +23,19 @@ router.get('/', (req, res) => {
 });
 router.get('/:id', (req, res) => {
   const user = db.prepare('SELECT id, full_name, email, phone, dob, gender, avatar_url, status, created_at FROM users WHERE id=?').get(req.params.id);
-  if (!user) return error(res, 'Khong tim thay hoi vien', 404);
+  if (!user) return error(res, 'Không tìm thấy hội viên', 404);
   const memberships = db.prepare('SELECT m.*, p.name plan_name FROM memberships m JOIN plans p ON p.id=m.plan_id WHERE m.user_id=?').all(req.params.id);
   success(res, { ...user, memberships });
 });
 router.put('/:id', (req, res) => {
   const current = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
-  if (!current) return error(res, 'Khong tim thay hoi vien', 404);
+  if (!current) return error(res, 'Không tìm thấy hội viên', 404);
   const next = { ...current, ...req.body };
   db.prepare('UPDATE users SET full_name=?, email=?, phone=?, dob=?, gender=?, status=? WHERE id=?').run(next.full_name, next.email, next.phone, next.dob, next.gender, next.status, req.params.id);
-  success(res, db.prepare('SELECT id, full_name, email, phone, dob, gender, status FROM users WHERE id=?').get(req.params.id), 'Da cap nhat hoi vien');
+  success(res, db.prepare('SELECT id, full_name, email, phone, dob, gender, status FROM users WHERE id=?').get(req.params.id), 'Đã cập nhật hội viên');
 });
 router.delete('/:id', (req, res) => {
   db.prepare("UPDATE users SET status='banned' WHERE id=?").run(req.params.id);
-  success(res, null, 'Da khoa hoi vien');
+  success(res, null, 'Đã khóa hội viên');
 });
 export default router;

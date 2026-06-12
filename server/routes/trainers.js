@@ -26,7 +26,7 @@ router.get('/:id', (req, res) => {
     FROM trainers t LEFT JOIN reviews r ON r.target_type='trainer' AND r.target_id=t.id AND r.is_approved=1
     WHERE t.id = ? GROUP BY t.id
   `).get(req.params.id);
-  if (!trainer) return error(res, 'Khong tim thay HLV', 404);
+  if (!trainer) return error(res, 'Không tìm thấy HLV', 404);
   const reviews = db.prepare(`SELECT r.*, u.full_name, u.avatar_url FROM reviews r JOIN users u ON u.id=r.user_id WHERE r.target_type='trainer' AND r.target_id=? ORDER BY r.created_at DESC`).all(req.params.id);
   success(res, { ...withRating(trainer), reviews });
 });
