@@ -21,9 +21,10 @@ export default function AdminLayout() {
   return (
     <main className="grid min-h-screen bg-zinc-100 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-100 lg:grid-cols-[260px_1fr]">
       <aside className="border-r border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <Link to="/admin" className="mb-8 flex items-center gap-2 px-2 text-xl font-black">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-black">IZ</span>
-          Admin
+        <Link to="/admin" className="mb-8 block px-2">
+          <img src="/assets/ironzone-logo-light.png" alt="IronZone Admin" className="h-8 w-auto dark:hidden" />
+          <img src="/assets/ironzone-logo.png" alt="IronZone Admin" className="hidden h-8 w-auto dark:block" />
+          <span className="mt-2 block text-xs font-black uppercase tracking-[0.2em] text-zinc-500">Admin Console</span>
         </Link>
         <nav>
           {items.map(([to, Icon, label]) => <NavLink end={to === ''} key={label} to={to} className={({ isActive }) => `mb-1 flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold ${isActive ? 'bg-primary text-black' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}><Icon size={18} />{label}</NavLink>)}

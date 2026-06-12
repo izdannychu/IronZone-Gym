@@ -1,4 +1,4 @@
-import { Dumbbell, Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
+import { Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
 
 export const Footer = () => {
@@ -8,7 +8,8 @@ export const Footer = () => {
     <footer className="mt-auto border-t border-zinc-200 bg-white py-10 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="container-page grid gap-8 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2 text-xl font-black"><Dumbbell className="text-primary" /> IRONZONE</div>
+          <img src="/assets/ironzone-logo-light.png" alt="IronZone" className="h-9 w-auto dark:hidden" />
+          <img src="/assets/ironzone-logo.png" alt="IronZone" className="hidden h-9 w-auto dark:block" />
           <p className="mt-3 max-w-md text-sm text-zinc-500">{t.footerText}</p>
         </div>
         <div>
