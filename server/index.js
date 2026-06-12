@@ -24,6 +24,16 @@ const allowedOrigin = process.env.CLIENT_URL || /^http:\/\/(localhost|127\.0\.0\
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 
+app.get('/', (req, res) => res.json({
+  success: true,
+  message: 'IronZone API đang chạy',
+  docs: {
+    health: '/api/health',
+    plans: '/api/plans',
+    trainers: '/api/trainers',
+    auth: '/api/auth/login'
+  }
+}));
 app.get('/api/health', (req, res) => res.json({ success: true, message: 'IronZone API is running' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes);
@@ -36,7 +46,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 
-app.use((req, res) => error(res, 'Endpoint khong ton tai', 404));
+app.use((req, res) => error(res, 'Endpoint không tồn tại', 404));
 app.use((err, req, res, next) => {
   console.error(err);
   error(res, 'Loi server', 500);
