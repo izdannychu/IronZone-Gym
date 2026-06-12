@@ -12,12 +12,35 @@ body {
   @apply bg-zinc-50 text-zinc-950 antialiased dark:bg-dark dark:text-zinc-100;
 }
 
+button,
+a,
+input,
+select,
+textarea {
+  transition:
+    color 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    opacity 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+button:active,
+a:active {
+  transform: scale(0.98);
+}
+
 .container-page {
   @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
 }
 
 .card {
-  @apply rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900;
+  @apply rounded-xl border border-zinc-200 bg-white shadow-sm transition duration-300 ease-out dark:border-zinc-800 dark:bg-zinc-900;
+}
+
+.card:hover {
+  @apply border-zinc-300 shadow-md dark:border-zinc-700;
 }
 
 .input {
@@ -32,17 +55,17 @@ body {
   @apply pr-11;
 }
 
-.page-shell {
-  animation: page-enter 280ms ease both;
-}
-
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

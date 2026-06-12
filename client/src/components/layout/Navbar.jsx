@@ -1,6 +1,7 @@
 import { Globe2, Menu, Moon, ShoppingCart, Sun, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { useCart } from "../../hooks/useCart";
@@ -126,26 +127,36 @@ export const Navbar = () => {
           {open ? <X /> : <Menu />}
         </button>
       </div>
-      {open && (
-        <div className="container-page mt-2 flex flex-col gap-2 rounded-3xl border border-white/30 bg-white/80 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-black/70 md:hidden">
-          {content}
-          <button
-            onClick={() => setLanguage(language === "vi" ? "en" : "vi")}
-            className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold hover:bg-zinc-100 dark:hover:bg-zinc-800"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: "auto" }}
+            exit={{ opacity: 0, y: -8, height: 0 }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            className="container-page overflow-hidden md:hidden"
           >
-            <Globe2 size={17} />
-            {language.toUpperCase()}
-          </button>
-          <Button
-            onClick={() => {
-              setOpen(false);
-              navigate(user ? (isAdmin ? "/admin" : "/dashboard") : "/login");
-            }}
-          >
-            {user ? t.account : t.login}
-          </Button>
-        </div>
-      )}
+            <div className="mt-2 flex flex-col gap-2 rounded-3xl border border-white/30 bg-white/80 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-black/70">
+              {content}
+              <button
+                onClick={() => setLanguage(language === "vi" ? "en" : "vi")}
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              >
+                <Globe2 size={17} />
+                {language.toUpperCase()}
+              </button>
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                  navigate(user ? (isAdmin ? "/admin" : "/dashboard") : "/login");
+                }}
+              >
+                {user ? t.account : t.login}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

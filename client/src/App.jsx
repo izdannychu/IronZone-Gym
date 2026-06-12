@@ -1,4 +1,5 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -24,11 +25,16 @@ import AdminMaintenance from './pages/admin/AdminMaintenance';
 import AdminPromotions from './pages/admin/AdminPromotions';
 import AdminPlans from './pages/admin/AdminPlans';
 import AdminOrders from './pages/admin/AdminOrders';
+import { pageTransition } from './components/motion/Motion';
 
-const PublicShell = ({ children }) => (
+const PublicShell = ({ children, location }) => (
   <div className="flex min-h-screen flex-col">
     <Navbar />
-    <div className="flex-1">{children}</div>
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div key={location.pathname} className="flex-1" {...pageTransition}>
+        {children}
+      </motion.div>
+    </AnimatePresence>
     <Footer />
   </div>
 );
@@ -69,7 +75,11 @@ const App = () => {
     </Routes>
   );
 
-  return isAdminRoute ? routes : <PublicShell>{routes}</PublicShell>;
+  return (
+    <MotionConfig reducedMotion="user">
+      {isAdminRoute ? routes : <PublicShell location={location}>{routes}</PublicShell>}
+    </MotionConfig>
+  );
 };
 
 export default App;

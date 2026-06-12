@@ -1,6 +1,7 @@
-import { Award, Clock, Dumbbell, Shield, Users, Zap } from 'lucide-react';
+import { Award, Clock, Dumbbell, Plus, Shield, Users, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { getPlans } from '../api/plans';
 import { getTrainers } from '../api/trainers';
 import { getReviews } from '../api/reviews';
@@ -9,6 +10,7 @@ import { TrainerCard } from '../components/TrainerCard';
 import { ReviewCard } from '../components/ReviewCard';
 import { Button } from '../components/ui/Button';
 import { useLanguage } from '../hooks/useLanguage';
+import { Reveal, Stagger, StaggerItem } from '../components/motion/Motion';
 
 const gymBg = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1800&q=80';
 const benefits = [
@@ -59,6 +61,57 @@ const StatCounter = ({ value, suffix = '', label }) => {
   );
 };
 
+const SectionHeading = ({ eyebrow, title, accent, subtitle, action }) => (
+  <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+    <div className="max-w-3xl">
+      <p className="text-sm font-black uppercase tracking-[0.24em] text-primary">{eyebrow}</p>
+      <h2 className="mt-4 text-4xl font-black uppercase leading-[0.95] sm:text-5xl">
+        {title}{' '}
+        <span className="text-primary">{accent}</span>
+      </h2>
+      {subtitle && <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-500 dark:text-zinc-400">{subtitle}</p>}
+    </div>
+    {action}
+  </div>
+);
+
+const FaqItem = ({ item }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <motion.div layout="position" transition={{ layout: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }} className="border-b border-zinc-800">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center justify-between gap-5 py-7 text-left"
+      >
+        <span className="text-base font-black uppercase leading-6 sm:text-lg">
+          {item.question}
+        </span>
+        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition duration-300 ${open ? 'bg-primary text-black' : 'bg-zinc-900 text-zinc-400 hover:bg-primary hover:text-black'}`}>
+          <Plus className={`transition-transform duration-300 ${open ? 'rotate-45' : 'rotate-0'}`} size={19} />
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ height: { duration: 0.42, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.25 } }}
+            className="overflow-hidden"
+          >
+            <div className="max-w-2xl pb-7 pr-14 text-sm leading-7 text-zinc-400 sm:text-base">
+              {item.answer}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
 export default function Home() {
   const { t } = useLanguage();
   const [plans, setPlans] = useState([]);
@@ -94,22 +147,34 @@ export default function Home() {
         <img src={gymBg} alt="IronZone gym floor" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-black/70" />
         <div className="container-page relative flex min-h-screen items-center py-28">
-          <div className="max-w-3xl text-white">
-            <p className="mb-4 text-sm font-black uppercase tracking-[0.25em] text-primary">{t.heroEyebrow}</p>
-            <h1 className="text-5xl font-black leading-tight sm:text-7xl">{t.heroTitle}</h1>
-            <p className="mt-6 max-w-2xl text-lg text-zinc-200">{t.heroText}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
+          <motion.div
+            className="max-w-3xl text-white"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.11, delayChildren: 0.12 } }
+            }}
+          >
+            <motion.p variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.6 }} className="mb-4 text-sm font-black uppercase tracking-[0.25em] text-primary">{t.heroEyebrow}</motion.p>
+            <motion.h1 variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.7 }} className="text-5xl font-black leading-tight sm:text-7xl">{t.heroTitle}</motion.h1>
+            <motion.p variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.65 }} className="mt-6 max-w-2xl text-lg text-zinc-200">{t.heroText}</motion.p>
+            <motion.div variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.6 }} className="mt-8 flex flex-wrap gap-3">
               <Button as={Link} to="/plans">{t.viewPlans}</Button>
               <Button as={Link} to="/register" variant="outline" className="border-white/40 bg-white/10 !text-white hover:bg-white/20">{t.freeRegister}</Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       <section className="bg-zinc-950 py-8 text-white">
-        <div className="container-page grid grid-cols-2 gap-5 md:grid-cols-4">
-          {stats.map(([value, suffix, label]) => <StatCounter key={label} value={value} suffix={suffix} label={label} />)}
-        </div>
+        <Stagger className="container-page grid grid-cols-2 gap-5 md:grid-cols-4">
+          {stats.map(([value, suffix, label]) => (
+            <StaggerItem key={label}>
+              <StatCounter value={value} suffix={suffix} label={label} />
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
       {apiError && (
@@ -121,47 +186,120 @@ export default function Home() {
       )}
 
       <section className="container-page py-16">
-        <h2 className="text-3xl font-black">{t.whyChoose}</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {benefits.map(([Icon, title, text]) => <article key={title} className="card p-5"><Icon className="text-primary" /><h3 className="mt-4 font-black">{title}</h3><p className="mt-2 text-sm text-zinc-500">{text}</p></article>)}
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow={t.whyEyebrow}
+            title={t.whyHeading}
+            accent={t.whyHeadingAccent}
+            subtitle={t.whySubtitle}
+          />
+        </Reveal>
+        <Stagger className="mt-8 grid gap-5 md:grid-cols-3">
+          {benefits.map(([Icon, title, text]) => (
+            <StaggerItem key={title} className="h-full">
+              <article className="card h-full p-5"><Icon className="text-primary" /><h3 className="mt-4 font-black">{title}</h3><p className="mt-2 text-sm text-zinc-500">{text}</p></article>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
       <section className="bg-zinc-100 py-16 dark:bg-zinc-950">
         <div className="container-page">
-          <div className="flex items-end justify-between gap-4"><h2 className="text-3xl font-black">{t.featuredPlans}</h2><Link className="text-sm font-bold text-primary" to="/plans">{t.viewAll}</Link></div>
-          <div className="mt-8 grid gap-5 md:grid-cols-3">{plans.map((plan) => <PlanCard key={plan.id} plan={plan} />)}</div>
+          <Reveal>
+            <SectionHeading
+              eyebrow={t.plansEyebrow}
+              title={t.plansHeading}
+              accent={t.plansHeadingAccent}
+              subtitle={t.plansHomeSubtitle}
+              action={<Link className="shrink-0 text-sm font-bold text-primary hover:text-primary-dark" to="/plans">{t.viewAll}</Link>}
+            />
+          </Reveal>
+          <Stagger className="mt-8 grid gap-5 md:grid-cols-3">
+            {plans.map((plan) => <StaggerItem key={plan.id} className="h-full"><PlanCard plan={plan} /></StaggerItem>)}
+          </Stagger>
+        </div>
+      </section>
+
+      <section className="bg-zinc-950 py-20 text-white">
+        <div className="container-page grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <Reveal className="lg:py-3">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-primary">
+                {t.faqTitle}
+              </p>
+              <h2 className="mt-5 max-w-xl text-4xl font-black uppercase leading-[0.95] sm:text-5xl lg:text-6xl">
+                {t.faqHeading}{' '}
+                <span className="text-primary">{t.faqHeadingAccent}</span>
+              </h2>
+              <p className="mt-7 max-w-lg text-base leading-7 text-zinc-400">
+                {t.faqSubtitle}
+              </p>
+              <Button as={Link} to="/contact" className="mt-8 px-6">
+                {t.faqContact}
+              </Button>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="border-t border-zinc-800">
+              {t.faqs.map((item) => <FaqItem key={item.question} item={item} />)}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="container-page py-16">
-        <h2 className="text-3xl font-black">{t.featuredTrainers}</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">{trainers.map((trainer) => <TrainerCard key={trainer.id} trainer={trainer} />)}</div>
+        <Reveal>
+          <SectionHeading
+            eyebrow={t.trainersEyebrow}
+            title={t.trainersHeading}
+            accent={t.trainersHeadingAccent}
+            subtitle={t.trainersSubtitle}
+          />
+        </Reveal>
+        <Stagger className="mt-8 grid gap-5 md:grid-cols-3">
+          {trainers.map((trainer) => <StaggerItem key={trainer.id} className="h-full"><TrainerCard trainer={trainer} /></StaggerItem>)}
+        </Stagger>
       </section>
 
       <section className="bg-zinc-100 py-16 dark:bg-zinc-950">
         <div className="container-page">
-          <h2 className="text-3xl font-black">{t.memberReviews}</h2>
-          <div className="mt-8 overflow-hidden">
-            <div className="flex transition-transform duration-700 ease-out" style={{ transform: `translateX(-${activeReview * 100}%)` }}>
+          <Reveal>
+            <SectionHeading
+              eyebrow={t.reviewsEyebrow}
+              title={t.reviewsHeading}
+              accent={t.reviewsHeadingAccent}
+              subtitle={t.reviewsSubtitle}
+            />
+          </Reveal>
+          <Reveal className="mt-8" delay={0.08}>
+            <div className="overflow-hidden">
+              <motion.div
+                className="flex"
+                animate={{ x: `-${activeReview * 100}%` }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              >
               {reviews.map((review) => (
                 <div key={review.id} className="w-full shrink-0 px-1 md:px-20">
                   <ReviewCard review={review} />
                 </div>
               ))}
+              </motion.div>
             </div>
-          </div>
-          <div className="mt-5 flex justify-center gap-2">
-            {reviews.map((review, index) => <button key={review.id} aria-label={`Review ${index + 1}`} onClick={() => setActiveReview(index)} className={`h-2.5 rounded-full transition-all ${index === activeReview ? 'w-8 bg-primary' : 'w-2.5 bg-zinc-300 dark:bg-zinc-700'}`} />)}
-          </div>
+            <div className="mt-5 flex justify-center gap-2">
+              {reviews.map((review, index) => <button key={review.id} aria-label={`Review ${index + 1}`} onClick={() => setActiveReview(index)} className={`h-2.5 rounded-full transition-all duration-500 ${index === activeReview ? 'w-8 bg-primary' : 'w-2.5 bg-zinc-300 dark:bg-zinc-700'}`} />)}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="container-page py-16">
-        <div className="rounded-2xl bg-primary p-8 text-black md:flex md:items-center md:justify-between">
-          <div><h2 className="text-3xl font-black">{t.promoHeadline}</h2><p className="mt-2 font-medium">{t.promoText}</p></div>
-          <Button as={Link} to="/plans" variant="dark" className="mt-5 md:mt-0">{t.startNow}</Button>
-        </div>
+        <Reveal>
+          <div className="rounded-2xl bg-primary p-8 text-black md:flex md:items-center md:justify-between">
+            <div><h2 className="text-3xl font-black">{t.promoHeadline}</h2><p className="mt-2 font-medium">{t.promoText}</p></div>
+            <Button as={Link} to="/plans" variant="dark" className="mt-5 md:mt-0">{t.startNow}</Button>
+          </div>
+        </Reveal>
       </section>
     </main>
   );
