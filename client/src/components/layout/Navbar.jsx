@@ -1,5 +1,6 @@
 import { Globe2, Menu, Moon, ShoppingCart, Sun, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/Button";
@@ -29,6 +30,58 @@ export const Navbar = () => {
     document.documentElement.classList.toggle("dark", dark);
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
+
+  const toggleTheme = (event) => {
+    const nextDark = !dark;
+    const root = document.documentElement;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+
+    root.style.setProperty("--theme-transition-x", `${x}px`);
+    root.style.setProperty("--theme-transition-y", `${y}px`);
+    root.style.setProperty("--theme-transition-radius", `${radius}px`);
+
+    const applyTheme = () => {
+      root.classList.toggle("dark", nextDark);
+      localStorage.setItem("theme", nextDark ? "dark" : "light");
+      flushSync(() => setDark(nextDark));
+    };
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (!document.startViewTransition || reduceMotion) {
+      applyTheme();
+      return;
+    }
+
+    root.classList.add("theme-transitioning");
+    const transition = document.startViewTransition(applyTheme);
+    transition.finished.finally(() => {
+      root.classList.remove("theme-transitioning");
+    });
+  };
+
+  const renderThemeIcon = () => (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={dark ? "sun" : "moon"}
+        initial={{ opacity: 0, rotate: -90, scale: 0.65 }}
+        animate={{ opacity: 1, rotate: 0, scale: 1 }}
+        exit={{ opacity: 0, rotate: 90, scale: 0.65 }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+        className="block"
+      >
+        {dark ? <Sun size={19} /> : <Moon size={19} />}
+      </motion.span>
+    </AnimatePresence>
+  );
 
   const navClass = ({ isActive }) =>
     `rounded-full px-3 py-2 text-sm font-semibold transition ${isActive ? "bg-primary text-black" : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"}`;
@@ -78,10 +131,11 @@ export const Navbar = () => {
           </button>
           <button
             title="Toggle theme"
-            onClick={() => setDark((v) => !v)}
-            className="rounded-full p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+            onClick={toggleTheme}
+            className="grid h-9 w-9 place-items-center overflow-hidden rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
-            {dark ? <Sun size={19} /> : <Moon size={19} />}
+            {renderThemeIcon()}
           </button>
           {!isAdmin && (
             <Link
@@ -144,6 +198,16 @@ export const Navbar = () => {
               >
                 <Globe2 size={17} />
                 {language.toUpperCase()}
+              </button>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              >
+                <span className="grid h-5 w-5 place-items-center">
+                  {renderThemeIcon()}
+                </span>
+                {dark ? "Light mode" : "Dark mode"}
               </button>
               <Button
                 onClick={() => {
