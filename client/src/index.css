@@ -78,22 +78,6 @@ html.theme-transitioning *::after {
 
 ::view-transition-new(root) {
   z-index: 9999;
-  animation: theme-spread 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes theme-spread {
-  from {
-    clip-path: circle(
-      0 at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%)
-    );
-  }
-
-  to {
-    clip-path: circle(
-      var(--theme-transition-radius, 150vmax)
-        at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%)
-    );
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

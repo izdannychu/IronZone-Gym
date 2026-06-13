@@ -1,5 +1,5 @@
 import { Globe2, Menu, Moon, ShoppingCart, Sun, User, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,6 +13,7 @@ export const Navbar = () => {
     () => localStorage.getItem("theme") === "dark",
   );
   const [open, setOpen] = useState(false);
+  const themeTransitioning = useRef(false);
   const { user, logout, isAdmin } = useAuth();
   const { count } = useCart();
   const { language, setLanguage, t } = useLanguage();
@@ -32,6 +33,8 @@ export const Navbar = () => {
   }, [dark]);
 
   const toggleTheme = (event) => {
+    if (themeTransitioning.current) return;
+
     const nextDark = !dark;
     const root = document.documentElement;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -56,15 +59,79 @@ export const Navbar = () => {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    if (!document.startViewTransition || reduceMotion) {
+    if (reduceMotion) {
       applyTheme();
+      return;
+    }
+
+    themeTransitioning.current = true;
+
+    if (!document.startViewTransition) {
+      const overlay = document.createElement("div");
+      const color = nextDark ? "#0a0a0a" : "#fafafa";
+
+      Object.assign(overlay.style, {
+        position: "fixed",
+        inset: "0",
+        zIndex: "99999",
+        pointerEvents: "none",
+        background: color,
+        clipPath: `circle(0px at ${x}px ${y}px)`,
+      });
+      document.body.appendChild(overlay);
+
+      const spread = overlay.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${radius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 650,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "forwards",
+        },
+      );
+
+      spread.finished
+        .then(() => {
+          applyTheme();
+          return overlay.animate(
+            { opacity: [1, 0] },
+            { duration: 180, easing: "ease-out", fill: "forwards" },
+          ).finished;
+        })
+        .finally(() => {
+          overlay.remove();
+          themeTransitioning.current = false;
+        });
       return;
     }
 
     root.classList.add("theme-transitioning");
     const transition = document.startViewTransition(applyTheme);
+
+    transition.ready.then(() => {
+      root.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${radius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 750,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "both",
+          pseudoElement: "::view-transition-new(root)",
+        },
+      );
+    });
+
     transition.finished.finally(() => {
       root.classList.remove("theme-transitioning");
+      themeTransitioning.current = false;
     });
   };
 
