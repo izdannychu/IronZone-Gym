@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Edit3, Plus, Trash2 } from 'lucide-react';
+import { Check, Edit3, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Modal } from '../ui/Modal';
 
@@ -12,7 +12,11 @@ export const AdminResource = ({ title, columns, fields, load, createItem, update
   const [form, setForm] = useState(() => emptyFromFields(fields));
   const [loading, setLoading] = useState(false);
 
-  const modalTitle = useMemo(() => editing?.id ? `Cập nhật ${title}` : `Thêm ${title}`, [editing, title]);
+  const resourceName = useMemo(() => title.replace(/^Quản lý\s+/i, ''), [title]);
+  const modalTitle = useMemo(() => editing?.id ? `Cập nhật ${resourceName}` : `Thêm ${resourceName}`, [editing, resourceName]);
+  const modalSubtitle = editing?.id
+    ? `Chỉnh sửa bản ghi #${editing.id}. Các thay đổi sẽ được áp dụng ngay sau khi lưu.`
+    : 'Nhập thông tin cho bản ghi mới. Vui lòng kiểm tra trước khi lưu.';
 
   const refresh = async () => {
     const res = await load();
@@ -90,25 +94,67 @@ export const AdminResource = ({ title, columns, fields, load, createItem, update
           </tbody>
         </table>
       </div>
-      <Modal open={Boolean(editing)} onClose={() => setEditing(null)} title={modalTitle}>
-        <form onSubmit={submit} className="grid max-h-[70vh] gap-4 overflow-y-auto pr-1">
-          {fields.map((field) => (
-            <label key={field.name} className="block">
-              <span className="mb-1 block text-sm font-bold">{field.label}</span>
-              {field.type === 'select' ? (
-                <select className="input" value={form[field.name] ?? ''} onChange={(e) => setForm({ ...form, [field.name]: e.target.value })}>
-                  {field.options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                </select>
-              ) : field.type === 'textarea' ? (
-                <textarea className="input min-h-24" value={form[field.name] ?? ''} onChange={(e) => setForm({ ...form, [field.name]: e.target.value })} />
-              ) : (
-                <input className="input" type={field.type || 'text'} value={form[field.name] ?? ''} onChange={(e) => setForm({ ...form, [field.name]: e.target.value })} />
-              )}
-            </label>
-          ))}
-          <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setEditing(null)}>Hủy</Button>
-            <Button loading={loading}>Lưu</Button>
+      <Modal
+        open={Boolean(editing)}
+        onClose={() => setEditing(null)}
+        title={modalTitle}
+        subtitle={modalSubtitle}
+        size="wide"
+      >
+        <form onSubmit={submit}>
+          <div className="grid gap-x-4 gap-y-3 p-5 min-[560px]:grid-cols-2 sm:p-6 lg:grid-cols-3">
+            {fields.map((field) => {
+              const isUrl = ['avatar_url', 'image_url'].includes(field.name);
+
+              return (
+                <label key={field.name} className={isUrl ? 'min-[560px]:col-span-2' : 'block'}>
+                  <span className="mb-1.5 block text-xs font-bold text-zinc-400">
+                    {field.label}
+                  </span>
+                  {field.type === 'select' ? (
+                    <select
+                      className="input h-10 border-zinc-700 bg-zinc-900 px-3 py-2 text-white focus:border-primary"
+                      value={form[field.name] ?? ''}
+                      onChange={(e) => setForm({ ...form, [field.name]: e.target.value })}
+                    >
+                      {field.options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                    </select>
+                  ) : field.type === 'textarea' ? (
+                    <textarea
+                      className="input h-20 resize-none border-zinc-700 bg-zinc-900 px-3 py-2 text-white focus:border-primary"
+                      value={form[field.name] ?? ''}
+                      onChange={(e) => setForm({ ...form, [field.name]: e.target.value })}
+                    />
+                  ) : (
+                    <input
+                      className="input h-10 border-zinc-700 bg-zinc-900 px-3 py-2 text-white placeholder:text-zinc-600 focus:border-primary"
+                      type={field.type || 'text'}
+                      value={form[field.name] ?? ''}
+                      onChange={(e) => setForm({ ...form, [field.name]: e.target.value })}
+                    />
+                  )}
+                </label>
+              );
+            })}
+          </div>
+          <div className="flex flex-col-reverse gap-2 border-t border-zinc-800 bg-zinc-950 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <button
+              type="button"
+              onClick={() => setForm(editing?.id ? normalize(editing) : emptyFromFields(fields))}
+              className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-zinc-500 hover:bg-white/5 hover:text-white"
+            >
+              <RotateCcw size={16} />
+              Đặt lại
+            </button>
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" className="flex-1 border-zinc-700 bg-transparent py-2 text-white hover:border-zinc-500 sm:flex-none" onClick={() => setEditing(null)}>
+                Hủy
+              </Button>
+              <Button loading={loading} className="flex-1 px-5 py-2 sm:flex-none">
+                <Check size={17} />
+                Lưu thay đổi
+              </Button>
+            </div>
           </div>
         </form>
       </Modal>

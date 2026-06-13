@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
+import { lazy, Suspense } from 'react';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -17,7 +18,6 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
 import AdminLayout from './pages/admin/AdminLayout';
-import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMembers from './pages/admin/AdminMembers';
 import AdminTrainers from './pages/admin/AdminTrainers';
 import AdminEquipment from './pages/admin/AdminEquipment';
@@ -26,6 +26,9 @@ import AdminPromotions from './pages/admin/AdminPromotions';
 import AdminPlans from './pages/admin/AdminPlans';
 import AdminOrders from './pages/admin/AdminOrders';
 import { pageTransition } from './components/motion/Motion';
+import { Spinner } from './components/ui/Spinner';
+
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 const PublicShell = ({ children, location }) => (
   <div className="flex min-h-screen flex-col">
@@ -61,7 +64,7 @@ const App = () => {
       </Route>
       <Route element={<ProtectedRoute admin />}>
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
+          <Route index element={<Suspense fallback={<Spinner />}><AdminDashboard /></Suspense>} />
           <Route path="plans" element={<AdminPlans />} />
           <Route path="members" element={<AdminMembers />} />
           <Route path="trainers" element={<AdminTrainers />} />
