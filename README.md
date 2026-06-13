@@ -1,6 +1,6 @@
 # IronZone Gym Management System
 
-Full-stack gym website built from `gym-website-prompt.md`: public landing page, plans, trainers, cart, checkout, user dashboard, admin dashboard, SQLite seed data, JWT auth, and REST APIs.
+IronZone combines a modern gym floor, expert coaching, and online management tools so members can track their fitness journey with confidence.
 
 ## Tech Stack
 
@@ -8,14 +8,14 @@ Full-stack gym website built from `gym-website-prompt.md`: public landing page, 
 - Backend: Node.js 20+, Express 4, better-sqlite3, bcryptjs, jsonwebtoken, express-validator
 - Database: SQLite demo database with production-friendly schema
 
-## Cai dat va chay
+## Installation and Setup
 
-### Yeu cau
+### Requirements
 
 - Node.js >= 20
 - npm >= 9
 
-### 1. Cai dependencies
+### 1. Install Dependencies
 
 ```bash
 cd server
@@ -25,23 +25,23 @@ cd ../client
 npm install
 ```
 
-### 2. Cau hinh moi truong
+### 2. Configure Environment Variables
 
 ```bash
 copy server\.env.example server\.env
 copy client\.env.example client\.env
 ```
 
-Update `server/.env` va thay `JWT_SECRET` bang mot chuoi bi mat dai hon 32 ky tu.
+Update `server/.env` and replace `JWT_SECRET` with a secure string longer than 32 characters.
 
-### 3. Khoi tao database
+### 3. Initialize the Database
 
 ```bash
 cd server
 npm run seed
 ```
 
-### 4. Chay development
+### 4. Start the Development Servers
 
 Terminal 1:
 
@@ -60,14 +60,14 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend: http://localhost:5000/api/health
 
-## Tai khoan demo
+## Demo Accounts
 
 | Role | Email | Password |
 |---|---|---|
 | Admin | admin@ironzone.vn | admin123 |
 | User | user1@example.com | password123 |
 
-## API nhanh
+## API Overview
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
@@ -80,48 +80,48 @@ npm run dev
 - `GET /api/admin/members`
 - `GET /api/admin/equipment`
 
-## Cau truc
+## Project Structure
 
 ```text
 client/   React + Vite + Tailwind frontend
 server/   Express API + SQLite schema/seed
 ```
 
-## Deploy production
+## Production Deployment
 
-Frontend va backend phai duoc deploy rieng. Vercel chi host React client, khong tu chay Express API trong thu muc `server`.
+The frontend and backend must be deployed separately. Vercel only hosts the React client and does not run the Express API located in the `server` directory.
 
-### 1. Deploy backend tren Render
+### 1. Deploy the Backend on Render
 
-Repository da co file `render.yaml`.
+The repository already includes a `render.yaml` file.
 
-1. Vao Render, chon **New > Blueprint** va ket noi repository.
-2. Render se tao service `ironzone-api` tu thu muc `server`.
-3. Dat bien moi truong `CLIENT_URL` thanh domain frontend, vi du:
+1. Open Render, select **New > Blueprint**, and connect the repository.
+2. Render will create the `ironzone-api` service from the `server` directory.
+3. Set the `CLIENT_URL` environment variable to the frontend domain, for example:
 
 ```text
 https://iron-zone-gym.vercel.app
 ```
 
-4. Sau khi deploy, kiem tra:
+4. After deployment, verify the API health endpoint:
 
 ```text
 https://<render-service>.onrender.com/api/health
 ```
 
-### 2. Ket noi frontend Vercel
+### 2. Connect the Vercel Frontend
 
-Trong Vercel Project Settings > Environment Variables, dat:
+In **Vercel Project Settings > Environment Variables**, set:
 
 ```text
 VITE_API_URL=https://<render-service>.onrender.com/api
 ```
 
-Khong su dung URL mau `https://your-api.onrender.com/api`.
+Do not use the placeholder URL `https://your-api.onrender.com/api`.
 
-Sau khi sua environment variable, phai redeploy frontend de Vite dua URL moi vao production bundle.
+After changing the environment variable, redeploy the frontend so Vite can include the new URL in the production bundle.
 
-Vercel project nen co:
+The Vercel project should use:
 
 ```text
 Root Directory: client
@@ -129,4 +129,4 @@ Build Command: npm run build
 Output Directory: dist
 ```
 
-Luu y: SQLite tren Render free filesystem co the bi reset khi service duoc deploy lai. Cau hinh hien tai phu hop demo/do an; production lau dai nen dung PostgreSQL hoac persistent disk.
+Note: SQLite data stored on Render's free filesystem may be reset when the service is redeployed. The current setup is suitable for demonstrations and academic projects. For long-term production use, choose PostgreSQL or a persistent disk.
