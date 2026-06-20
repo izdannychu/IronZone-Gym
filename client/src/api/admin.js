@@ -5,6 +5,7 @@ export const createAdminPlan = (payload) => api.post('/admin/plans', payload);
 export const updateAdminPlan = (id, payload) => api.put(`/admin/plans/${id}`, payload);
 export const deleteAdminPlan = (id) => api.delete(`/admin/plans/${id}`);
 export const adminMembers = (params) => api.get('/admin/members', { params });
+export const createAdminMember = (payload) => api.post('/admin/members', payload);
 export const updateAdminMember = (id, payload) => api.put(`/admin/members/${id}`, payload);
 export const deleteAdminMember = (id) => api.delete(`/admin/members/${id}`);
 export const adminTrainers = () => api.get('/admin/trainers');
@@ -16,6 +17,7 @@ export const createAdminEquipment = (payload) => api.post('/admin/equipment', pa
 export const updateAdminEquipment = (id, payload) => api.put(`/admin/equipment/${id}`, payload);
 export const deleteAdminEquipment = (id) => api.delete(`/admin/equipment/${id}`);
 export const adminMaintenance = () => api.get('/admin/maintenance');
+export const adminMaintenanceLookups = () => api.get('/admin/maintenance/lookups');
 export const createAdminMaintenance = (payload) => api.post('/admin/maintenance', payload);
 export const updateAdminMaintenance = (id, payload) => api.put(`/admin/maintenance/${id}`, payload);
 export const deleteAdminMaintenance = (id) => api.delete(`/admin/maintenance/${id}`);
@@ -25,3 +27,4 @@ export const updateAdminPromotion = (id, payload) => api.put(`/admin/promotions/
 export const deleteAdminPromotion = (id) => api.delete(`/admin/promotions/${id}`);
 export const adminOrders = () => api.get('/admin/orders');
 export const updateAdminOrder = (id, payload) => api.put(`/admin/orders/${id}`, payload);
+export const deleteAdminOrder = (id) => api.delete(`/admin/orders/${id}`);

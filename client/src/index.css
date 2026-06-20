@@ -60,6 +60,17 @@ a:active {
   padding-right: 3rem;
 }
 
+.admin-dialog-field option {
+  background-color: #090909;
+  color: #f4f4f5;
+}
+
+.admin-dialog-field option:checked,
+.admin-dialog-field option:hover {
+  background-color: #f59e0b;
+  color: #090909;
+}
+
 html.theme-transitioning *,
 html.theme-transitioning *::before,
 html.theme-transitioning *::after {

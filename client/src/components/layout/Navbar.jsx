@@ -279,7 +279,9 @@ export const Navbar = () => {
               <Button
                 onClick={() => {
                   setOpen(false);
-                  navigate(user ? (isAdmin ? "/admin" : "/dashboard") : "/login");
+                  navigate(
+                    user ? (isAdmin ? "/admin" : "/dashboard") : "/login",
+                  );
                 }}
               >
                 {user ? t.account : t.login}
